@@ -76,11 +76,11 @@
                         <table class="trans-table">
                             <thead>
                                 <tr>
-                                    <th>Asset</th>
-                                    <th>Holdings</th>
-                                    <th>Current Price</th>
-                                    <th>Total Value</th>
-                                    <th>P&L</th>
+                                    <th id="th-symbol" onclick="setSort('symbol')" style="cursor:pointer">Asset <i class="fas fa-sort"></i></th>
+                                    <th id="th-amount" onclick="setSort('amount')" style="cursor:pointer">Holdings <i class="fas fa-sort"></i></th>
+                                    <th id="th-price" onclick="setSort('price')" style="cursor:pointer">Current Price <i class="fas fa-sort"></i></th>
+                                    <th id="th-value" onclick="setSort('value')" style="cursor:pointer">Total Value <i class="fas fa-sort"></i></th>
+                                    <th id="th-pl" onclick="setSort('pl')" style="cursor:pointer">P&L <i class="fas fa-sort"></i></th>
                                 </tr>
                             </thead>
                             <tbody id="holdings-tbody"></tbody>
@@ -144,7 +144,7 @@
             'DOGE': 'dogecoin', 'AVAX': 'avalanche-2', 'MATIC': 'matic-network', 
             'LINK': 'chainlink', 'SHIB': 'shiba-inu', 'LTC': 'litecoin', 'PEPE': 'pepe',
             'BONK': 'bonk', 'ICP': 'internet-computer', 'JASMY': 'jasmycoin', 'DOVU': 'dovu-2',
-            'PENGU': 'pudgy-penguins', 'KTA': 'kta'
+            'PENGU': 'pudgy-penguins', 'KTA': 'keeta'
         };
 
         const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
@@ -153,6 +153,7 @@
         // ===== STATE =====
         let portfolio = [];
         let selectedCoinData = null;
+        let dashboardSort = { key: 'value', dir: 'desc' };
 
         // ===== HELPERS =====
         function getIcon(symbol, thumb) {
@@ -248,6 +249,31 @@
             renderPositions();
         }
 
+        function setSort(key) {
+            if(dashboardSort.key === key) {
+                dashboardSort.dir = dashboardSort.dir === 'desc' ? 'asc' : 'desc';
+            } else {
+                dashboardSort.key = key;
+                dashboardSort.dir = 'desc';
+            }
+            renderDashboard();
+        }
+
+        function updateSortIcons() {
+            ['symbol', 'amount', 'price', 'value', 'pl'].forEach(key => {
+                const th = document.getElementById(`th-${key}`);
+                if(th) {
+                    const iconEl = th.querySelector('i');
+                    if(iconEl) {
+                        iconEl.className = dashboardSort.key === key
+                            ? `fas fa-sort-${dashboardSort.dir === 'asc' ? 'up' : 'down'}`
+                            : 'fas fa-sort';
+                        iconEl.style.opacity = dashboardSort.key === key ? '1' : '0.3';
+                    }
+                }
+            });
+        }
+
         function renderDashboard() {
             let totalVal = 0, totalInvested = 0;
             let bestCoin = { sym: '-', pct: -9999 };
@@ -255,19 +281,45 @@
             const tbody = document.getElementById('holdings-tbody');
             tbody.innerHTML = '';
 
-            portfolio.forEach(coin => {
+            updateSortIcons();
+
+            // Pre-calculate data
+            let rows = portfolio.map(coin => {
                 const amount = coin.buys.reduce((sum, b) => sum + b.amount, 0);
-                if(amount <= 0) return;
+                if(amount <= 0) return null;
                 
                 const invested = coin.buys.reduce((sum, b) => sum + (b.amount * b.price), 0);
                 const value = amount * coin.currentPrice;
                 const pl = value - invested;
                 const plPct = invested > 0 ? (pl/invested)*100 : 0;
 
-                totalVal += value;
-                totalInvested += invested;
-                if(plPct > bestCoin.pct) bestCoin = { sym: coin.symbol, pct: plPct };
+                return { coin, amount, invested, value, pl, plPct, price: coin.currentPrice, symbol: coin.symbol };
+            }).filter(Boolean);
 
+            // Calculate totals and best coin
+            rows.forEach(r => {
+                totalVal += r.value;
+                totalInvested += r.invested;
+                if(r.plPct > bestCoin.pct) bestCoin = { sym: r.coin.symbol, pct: r.plPct };
+            });
+
+            // Sort
+            rows.sort((a, b) => {
+                let valA = a[dashboardSort.key];
+                let valB = b[dashboardSort.key];
+
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+
+                if (valA < valB) return dashboardSort.dir === 'asc' ? -1 : 1;
+                if (valA > valB) return dashboardSort.dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            rows.forEach(r => {
+                const { coin, amount, value, pl, plPct } = r;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="display: flex; align-items: center; gap: 0.75rem;">
