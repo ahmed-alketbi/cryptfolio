@@ -258,20 +258,12 @@ function renderPositions() {
     container.innerHTML = '';
     const filter = document.getElementById('filter-input').value.toLowerCase();
 
-    if (portfolio.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 2rem; color: var(--subtext0);">No positions found. Add a transaction or import a portfolio.</div>';
-        return;
-    }
-
-    let foundAny = false;
-
     portfolio.forEach(coin => {
         if(!coin.name.toLowerCase().includes(filter) && !coin.symbol.toLowerCase().includes(filter)) return;
 
         const totalAmount = coin.buys.reduce((a, b) => a + b.amount, 0);
         if(totalAmount <= 0 && coin.buys.length === 0) return;
 
-        foundAny = true;
         const totalValue = totalAmount * coin.currentPrice;
         const totalInvested = coin.buys.reduce((a,b) => a + (b.amount*b.price), 0);
         const avgPrice = totalAmount > 0 ? totalInvested / totalAmount : 0;
@@ -353,12 +345,7 @@ function renderPositions() {
             </table>
         `;
         container.appendChild(card);
-        container.appendChild(card);
     });
-
-    if (!foundAny && portfolio.length > 0) {
-        container.innerHTML = '<div style="text-align:center; padding: 2rem; color: var(--subtext0);">No matching coins found.</div>';
-    }
 }
 
 // ===== ACTIONS =====
