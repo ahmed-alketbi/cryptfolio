@@ -4,140 +4,82 @@ A beautiful, professional cryptocurrency portfolio tracking application with a C
 
 ## 🎨 Features
 
-- **4-Tab Interface**: Dashboard, Positions, Holdings, Analytics
+- **2-Tab Interface**: Dashboard and Positions
 - **Real-time Price Updates**: Fetches live data from CoinGecko API
-- **Import/Export**: Import from backup files or export your portfolio
-- **Advanced Charts**: Portfolio distribution, performance metrics, risk analysis
+- **Import/Export**: Import from backup files or export your portfolio in JSON format
+- **Sortable Dashboard**: Sort holdings by Asset, Holdings, Price, Value, and P&L
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Local Storage**: Your data is saved locally and persists between sessions
-- **CORS Support**: Works with both direct API and CORS proxy
+- **CORS Support**: Proxy server included for local development
 
 ## 🚀 Quick Start
 
-### Option 1: Using Local Files (Recommended for most users)
-1. **Open `index.html`** in your web browser
-2. This will work with online features when API is accessible
-3. If API calls fail, the app will still function with cached/saved data
-
-### Option 2: Using Local Server (For CORS issues)
-1. **Install Node.js** if not already installed:
+### Method 1: Local Server (Recommended)
+1. **Install Dependencies**:
    ```bash
-   npm install -g
+   bun install
    ```
 
 2. **Start the server**:
    ```bash
-   node server.js
+   bun run server.js
    ```
 
 3. **Open `http://localhost:8080`** in your browser
-4. Import your portfolio with the import button
+
+### Method 2: Direct Browser
+1. **Open `index.html`** in your web browser
+2. Note: Some API features may be limited due to browser CORS policies without the proxy server.
 
 ## 📂 Project Structure
 
 ```
 crypto-portfolio-pro/
-├── index.html          # Main application
-├── styles.css          # Styling with Catppuccin theme
-├── script.js          # Main application logic
-├── api.js            # API module (loaded dynamically)
-├── server.js          # Optional local server for CORS issues
-├── package.json      # Node.js dependencies
-└── README.md         # This file
+├── index.html          # Main application HTML
+├── styles.css          # Styling (Catppuccin Refined theme)
+├── app.js              # Main application logic
+├── server.js           # Bun server with CoinGecko API proxy
+├── package.json        # Dependencies
+└── README.md           # Documentation
 ```
-
-## 🛠 Installation
-
-### Method 1: Direct Browser (No Server Needed)
-1. Open `index.html` directly in your web browser
-2. The app includes built-in fallbacks for when the API is not accessible
-
-### Method 2: Local Server (Resolves CORS Issues)
-1. Install Node.js
-2. Run the local server
-3. Open `http://localhost:8080`
 
 ## 📖 Usage
 
 ### Adding Positions
-1. Click **Add Position** button
-2. Search for any cryptocurrency
-3. Enter amount and buy price
-4. View your portfolio grow with real-time data
+1. Click **Add Transaction** button.
+2. Search for any cryptocurrency (e.g., "Keeta", "Bitcoin").
+3. Enter amount, buy price, and date.
+4. Save to see your portfolio update.
 
-### Importing from Backup
-1. Click the **import button** (📤) in the header
-2. Select your `portfolio-*.json` backup file
-3. Your positions will be automatically imported
+### Dashboard Sorting
+- Click on any column header in the "Portfolio Holdings" table to sort by that metric.
+- Click again to toggle between Ascending and Descending order.
 
-### Viewing Analytics
-1. Switch to the **Analytics** tab
-2. See:
-   - Total return percentage
-   - Win rate (profitable vs loss positions)
-   - Portfolio distribution charts
-   - Risk analysis metrics
-
-### Exporting Your Data
-1. Click the **export** button (📊) in the header
-2. Choose between:
-   - JSON format (for re-importing)
-   - CSV format (for spreadsheet analysis)
+### Import/Export
+- **Import**: Click the upload icon (cloud with arrow up) to load a `portfolio.json` file.
+- **Export**: Click the download icon (cloud with arrow down) to save a backup of your data.
 
 ## 🔧 Technical Details
 
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **API**: CoinGecko API with proxy support
-- **Theme**: Catppuccin Mocha (Dark Mode)
-- **Local Storage**: Browser localStorage for persistence
-- **CORS Handling**: Automatic proxy usage for file:// protocol
-- **Rate Limiting**: 1 second between requests to avoid API limits
-- **Caching**: 1-minute cache to reduce API calls
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript (ES6+)
+- **Backend**: Bun (for local serving and API proxying)
+- **API**: CoinGecko API (via proxy)
+- **Theme**: Catppuccin Refined (Dark Mode)
+- **Data Persistence**: `localStorage`
 
-## 🌟 Catppuccin Mocha Color Palette
+## 🌟 Catppuccin Refined Theme
 
-- **Base**: `#1e1e2e`
-- **Mantle**: `#181825`
-- **Crust**: `#11111b`
-- **Text**: `#cdd6f4`
-- **Subtext**: `#a6adc8`
-- **Surface0**: `#313244`
-- **Surface1**: `#45475a`
-- **Surface2**: `#585b70`
-- **Mauve**: `#cba6f7`
-- **Pink**: `#f2cdcd`
-- **Green**: `#a6e3a1`
-- **Red**: `#f38ba8a`
-- **Yellow**: `#fab387`
+The UI uses a customized "Catppuccin Refined" palette for a modern, glassmorphism look:
+- **Background**: `#181825` (Mantle)
+- **Surface**: `#1e1e2e` (Base) with transparency
+- **Accents**: `#cba6f7` (Mauve), `#fab387` (Yellow), `#a6e3a1` (Green), `#f38ba8` (Red)
 
-## 📊 Your Portfolio Data
+## 🔐 Privacy
 
-Your backup shows a diverse portfolio with multiple positions across 16 different cryptocurrencies, including:
-- **Layer 1**: Bitcoin, Ethereum, Solana
-- **Layer 2**: Cardano, Chainlink, Polygon
-- **Meme Coins**: Shiba Inu, Pepe, PENGU
-- **New Projects**: HBAR, ICP, DOVU, KAS
-- **Privacy Coins**: Monero, Dash, Zcash
-
-## 🔐 Privacy & Security
-
-- **Local Only**: Your portfolio data never leaves your browser
-- **No Tracking**: No analytics or data collection
-- **Open Source**: Full transparency - view the code yourself
-- **Secure**: No API keys or authentication required
-
-## 🎯 Get Started
-
-1. Open the application in your browser
-2. Start adding your cryptocurrency positions
-3. Track your portfolio's performance over time
+- **Local Only**: Your portfolio data never leaves your browser (stored in `localStorage`).
+- **No Tracking**: No analytics or data collection.
+- **Open Source**: Full transparency.
 
 ## 📞 Support
 
-If you encounter any issues:
-1. Check browser console for error messages
-2. Ensure you have Node.js installed for server option
-3. Try the direct browser method first
-4. Clear your browser cache if needed
-
-Your crypto portfolio is now ready to use! 🎉
+If you encounter API errors (red indicator), ensure the local server is running (`bun run server.js`) to handle CORS requests properly.
